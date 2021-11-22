@@ -45,3 +45,7 @@ header h4 {
     font-size: 15px;
     background-color: rgb(59, 10, 150);
 }
+
+.hide {
+    display: none;
+}

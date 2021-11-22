@@ -1,14 +1,32 @@
 // Erase or delete contents of the current page and then call function to create the new page again.
-
-var startQuizEl = document.getElementById("start-quiz");
+var startQuizButton = document.getElementById("start-quiz");
+var questionContainer = document.getElementById("question-container");
+var questionEl = document.getElementById("question");
+var currentQuestion;
 var timer = 60;
+
 var quizQuestions = [
     {question: "Commonly used data types DO NOT include",
-    choice: ["Strings","Booleans","Arrays", "Alerts"],
-    answer: "Alerts"},
+    answers: [
+        {text: "Strings", correct: false},
+        {text: "Booleans", correct: false},
+        {text: "Arrays", correct: false},
+        {text: "Alerts", correct: true}
+    ]},
     {question: "How many apples does the grocery store have",
-    choice: ["What are apples", "17", "No", "Why fruits"],
-    answer: "No"}
+    answers: [
+        {text: "20", correct: false},
+        {text: "7", correct: false},
+        {text: "No", correct: false},
+        {text: "Why Apples", correct: true}
+    ]},
+    {question: "What is a common looping method in Javascript?",
+    answers: [
+        {text: "for", correct: true},
+        {text: "insert", correct: false},
+        {text: "looper", correct: false},
+        {text: "within", correct: false}
+    ]}
 ];
 
 
@@ -22,81 +40,72 @@ var countdown = function() {
     }
 };
 
-var rightAnswer = function() {
-
-    return (10);
-};
-
-var wrongAnswer = function() {
-
-    return (-20);
-};
-
-var answerChosen = function(event) {
-    var button = event.target;
-    button.dataset.clicked = "true";
-};
-
-var 
-
-var displayQuestion = function(questionObj, h1Element, divElement) {
-    h1Element.innerText = questionObj.question; 
-
-    var choices = questionObj.choice;
-
-    for (var i=0; i<choices.length; i++) {
-        var holdEl = document.createElement("button");
-        holdEl.setAttribute("id", "button");
-        holdEl.setAttribute("data-clicked", "false");
-        holdEl.innerText = choices[i];
-        divElement.appendChild(holdEl);
-    }
-    
-    var selected = document.querySelectorAll("#button");
-
-    for (var entry of selected.entries()) {
-        console.log(entry[1].dataset.clicked);
-    }
-
-    // console.log(selected.values);
-    // add event listener to view if user chose option;
-    var answer = divElement.addEventListener("click",answerChosen);
-};
-
-var startQuestions = function() {
-    setInterval(countdown, 1000);
-    var divEl = document.getElementById("questions");
-    var h1El = divEl.querySelector("#test1");
-    // p1E1 can only exist here and not in createMultiple choice... Why?
+var removeStartPage = function() {
+    // Get the p and button elements on page
     var p1E1 = document.getElementById("test2");
-    var buttonEl = divEl.querySelector("#start-quiz");
+    var buttonEl = document.getElementById("start-quiz");
 
+    // Remove start page button and p elements.
     p1E1.remove();
     buttonEl.remove();
+}
 
-    for (var i=0; i < quizQuestions.length; i++) {
-        displayQuestion(quizQuestions[i], h1El, divEl);
-        // createMultipleChoice(quizQuestions[i], divEl);
-        // while ()
+var clearQuestion = function() {
+    buttons = document.querySelectorAll("#button");
+    for (var button of buttons) {
+        button.remove();
     }
 };
 
- // How can we control displaying questions to user? Other than looping..
- // Do we have to set a timeout? 
-startQuizEl.addEventListener("click", startQuestions);
+var selectAnswer = function(event) {
+    var userChoice = event.target;
+    var isCorrect = userChoice.dataset.correct;
+    
+    if (isCorrect === "true") {
+        alert("Correct");
+    } else {
+        alert("false");
+    }
+    
+    currentQuestion++;
+    clearQuestion();
+    displayNextQuestion();
+};
 
-// will need to addEventListener() to button click.
+var displayQuestion = function(questionObj) {
+    questionEl.innerText = questionObj.question;
 
+    // console.log(questionObj.answers.length);
+    for (var i=0; i<questionObj.answers.length; i++) {
+        // create a button for each answer in a question.
+        var button = document.createElement("button");
+        button.setAttribute("id", "button");
+        button.innerText = questionObj.answers[i].text;
+        questionContainer.appendChild(button); 
 
-// loop through object containing question, choices, and answers.
-// for each question, wait until user clicks on an answer
-// then tell them if they are correct or wrong
-// if wrong deduct time.
+        // if the answer is correct, give button attribute of correct = true, else give attribute correct=false;
+        if (questionObj.answers[i].correct) {
+            button.setAttribute("data-correct", questionObj.answers[i].correct);
+        } else {
+            button.setAttribute("data-correct", questionObj.answers[i].correct);
+        }
 
-// Set a callback function for each new question page.. 
-// ex:      
-// secondFunction() {
-//     firstFunction(function() {
+        button.addEventListener("click", selectAnswer);
+    }
+};
 
-//     });
-// };
+var displayNextQuestion = function () {
+    displayQuestion(quizQuestions[currentQuestion]);
+};
+
+var startQuiz = function() {
+    // Start Countdown
+    setInterval(countdown, 1000);
+
+    currentQuestion = 0;
+
+    removeStartPage();
+    displayQuestion(quizQuestions[currentQuestion]);
+};
+
+startQuizButton.addEventListener("click", startQuiz);
