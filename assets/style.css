@@ -24,6 +24,8 @@ header h4 {
     width: 525px;
     margin: 25px auto;
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .quiz-container h1 {
@@ -48,4 +50,19 @@ header h4 {
 
 .hide {
     display: none;
+}
+
+.wrong-answer, .right-answer{
+    border-top: 1px solid blue;
+    width: 100%;
+    font-family: var(--font);
+    font-size: 30px;
+    order: 5;
+    margin-top: 15px;
+    text-align: left;
+}
+
+.answers {
+    order: 2;
+
 }

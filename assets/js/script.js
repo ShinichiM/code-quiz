@@ -3,6 +3,9 @@ var startQuizButton = document.getElementById("start-quiz");
 var questionContainer = document.getElementById("question-container");
 var questionEl = document.getElementById("question");
 var currentQuestion;
+
+var answerResponse = document.createElement("div");
+questionContainer.appendChild(answerResponse);
 var timer = 60;
 
 var quizQuestions = [
@@ -41,7 +44,7 @@ var countdown = function() {
 };
 
 var removeStartPage = function() {
-    // Get the p and button elements on page
+    // Get the p and button elements on start page
     var p1E1 = document.getElementById("test2");
     var buttonEl = document.getElementById("start-quiz");
 
@@ -50,45 +53,57 @@ var removeStartPage = function() {
     buttonEl.remove();
 }
 
+// Clear the previous question's answers from page
 var clearQuestion = function() {
+    // select all elements with id of button (All answers)
     buttons = document.querySelectorAll("#button");
+
+    // Loop through each button and remove them
     for (var button of buttons) {
         button.remove();
     }
 };
 
+
+// listen for user interaction with an answer button: when they (select an answer)
 var selectAnswer = function(event) {
+    answerResponse.setAttribute("class", "right-answer");
+    // store element that user clicks
     var userChoice = event.target;
+
+    // Get the question correct object attribute
     var isCorrect = userChoice.dataset.correct;
     
+    // If correct, alert user correct. If not, remove 10 sec from timer and alert user wrong
     if (isCorrect === "true") {
-        alert("Correct");
+        answerResponse.innerText = "Correct!";
     } else {
-        alert("false");
+        timer = timer - 10;
+        answerResponse.innerText = "Wrong!";
     }
     
+    // Increment question counter to select next question object.
     currentQuestion++;
+
+    // clear current question from screen.
     clearQuestion();
+
+    // display the next question
     displayNextQuestion();
 };
 
 var displayQuestion = function(questionObj) {
     questionEl.innerText = questionObj.question;
 
-    // console.log(questionObj.answers.length);
+    // Loop through each answer in the question and create a button whose text value is the answer
     for (var i=0; i<questionObj.answers.length; i++) {
         // create a button for each answer in a question.
         var button = document.createElement("button");
         button.setAttribute("id", "button");
+        button.setAttribute("class", "answers");
         button.innerText = questionObj.answers[i].text;
+        button.setAttribute("data-correct", questionObj.answers[i].correct)
         questionContainer.appendChild(button); 
-
-        // if the answer is correct, give button attribute of correct = true, else give attribute correct=false;
-        if (questionObj.answers[i].correct) {
-            button.setAttribute("data-correct", questionObj.answers[i].correct);
-        } else {
-            button.setAttribute("data-correct", questionObj.answers[i].correct);
-        }
 
         button.addEventListener("click", selectAnswer);
     }
@@ -103,7 +118,7 @@ var startQuiz = function() {
     setInterval(countdown, 1000);
 
     currentQuestion = 0;
-
+    
     removeStartPage();
     displayQuestion(quizQuestions[currentQuestion]);
 };
