@@ -21,7 +21,7 @@ header h4 {
 }
 
 .quiz-container {
-    width: 525px;
+    width: 600px;
     margin: 25px auto;
     text-align: center;
     display: flex;
@@ -46,23 +46,56 @@ header h4 {
     color: rgba(255, 255, 255, 0.904);
     font-size: 15px;
     background-color: rgb(59, 10, 150);
+    justify-content: center;
 }
 
-.hide {
-    display: none;
-}
-
-.wrong-answer, .right-answer{
-    border-top: 1px solid blue;
+.response {
+    border-top: 1px solid rgb(163, 163, 163);
     width: 100%;
     font-family: var(--font);
     font-size: 30px;
     order: 5;
-    margin-top: 15px;
+    margin-top: 25px;
+    text-align: left;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0;  
+    padding: 0;
+    width: fit-content;
     text-align: left;
 }
 
 .answers {
     order: 2;
+    font-size: 20px;
+    text-align: left;
+}
 
+.text-left {
+    text-align: left;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.left-flex {
+    text-align: left;
+    display: flex;
+}
+
+.m-right {
+    font-size: 25px;
+    margin-right: 10px;
+}
+
+.submit-button {
+    border-radius: 5px;
+    padding: 5px 20px;
+    font-family:var(--font);
+    color: rgba(255, 255, 255, 0.904);
+    font-size: 15px;
+    background-color: rgb(59, 10, 150);
+    justify-content: center;
 }
