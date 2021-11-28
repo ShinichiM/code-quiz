@@ -2,8 +2,13 @@
 var startQuizButton = document.getElementById("start-quiz");
 var questionContainer = document.getElementById("question-container");
 var questionEl = document.getElementById("question");
+var xy = document.getElementById('intro-header');
+var viewHighscore = xy.querySelector("h4");
+
+
 var currentQuestion;
 var numPoints = 0;
+var time;
 
 var answerResponse = document.createElement("div");
 answerResponse.setAttribute("id", "user-response");
@@ -13,7 +18,7 @@ buttonContainer.setAttribute("class", "container");
 questionContainer.appendChild(buttonContainer);
 
 var users = [];
-var timer = 60;
+var timer = 75;
 
 var quizQuestions = [
     {question: "Commonly used data types DO NOT include",
@@ -47,16 +52,27 @@ var quizQuestions = [
 ];
 
 
+// Countdown function for quiz timer
 var countdown = function() {
     var divEl = document.getElementById("timer");
-    if (timer >= 0){
-        divEl.innerText = "Time: " + timer; 
-        timer--;
-    } else {
-        clearInterval(timer);
-    }
+    time = setInterval(function(){
+        if (timer >= 0){
+            divEl.innerText = "Time: " + timer; 
+            timer--;
+        } else {
+            clearInterval(time);
+        }
+    }, 1000);          
 };
 
+// Stop countdown set interval and return the current time
+var stopCountdown = function() {
+    clearInterval(time);
+    var divEl = document.getElementById("timer");
+    divEl.innerText = "Time: " + timer;
+    return timer;
+}
+// Removes the elements on the start page
 var removeStartPage = function() {
     // Get the p and button elements on start page
     var p1E1 = document.getElementById("test2");
@@ -65,29 +81,32 @@ var removeStartPage = function() {
     // Remove start page button and p elements.
     p1E1.remove();
     buttonEl.remove();
-}
+};
 
 // Clear the previous question's answers from page
 var clearQuestion = function() {
     // select all elements with id of button (All answers)
     buttons = document.querySelectorAll("#button");
 
-    // Loop through each button and remove them
+    // Loop through each button and remove them89
     for (var button of buttons) {
         button.remove();
     }
 };
 
-// display Highscores
-var highscore = function(quizFinishDiv, finishText, userObj) {
-    // localStorage.setItem(userInitials, numPoints);
+// display Highscores -- quizFinishDiv, finishText
+var highscore = function() {
+    // Hide quiz header from highscore page
+    document.getElementById("intro-header").style.display = 'none';
+
+    // set h1 element to High Scores
     questionEl.innerText = "High Scores";
-    // debugger;
+
     // sort users by highest score 
     users.sort((a,b) => a.score < b.score ? 1 : -1);
     
+    // Loop through the users array and only print the top 5 users according to score
     for (var i=0; i<users.length; i++) {
-        // Only print top five users
         if (i === 5) {
             break;
         }
@@ -98,41 +117,66 @@ var highscore = function(quizFinishDiv, finishText, userObj) {
         questionContainer.appendChild(test);
     }
     
+    // create div element to store the high score page buttons (Go back and clear scores)
     var divEl = document.createElement("div");
     divEl.setAttribute("class", "left-flex");
     var button1El = document.createElement("button");
     var button2El = document.createElement("button");
 
+    // Set classes for buttons to match quiz buttons
     button1El.setAttribute("class", "submit-button");
     button1El.innerText = "Go Back";
     button2El.setAttribute("class", "submit-button");
     button2El.innerText = "Clear Highscores";
     
+    // add the buttons to the div element
     divEl.appendChild(button1El);
     divEl.appendChild(button2El);
 
+    // append the div element to the question container (main container for quiz componenets)
     questionContainer.appendChild(divEl);
 
-    // return back to quiz front page
+    // Event listener for 'go back' button, refreshes the web page.
     button1El.addEventListener("click", function(){
+        // page refresh
         location.reload();
         return false;
     });
 
+    // Event listener for clear highscore button
     button2El.addEventListener("click", function(){
+        // get all highscore elements and store in variable
         var highscoreArr = questionContainer.querySelectorAll("#highscores");
+
+        // loop through each highscore element in the highscoreArr and remove the corresponding HTML from page
         for (var i=0; i<highscoreArr.length; i++) {
             highscoreArr[i].remove();
         }
+        // remove all stored scores and initials from local storage
+        localStorage.removeItem("score");
     });
 
-    finishText.remove();
-    answerResponse.remove();
-    quizFinishDiv.remove();
 };
 
-// display quiz finish
+// Event listener for view highscore
+viewHighscore.addEventListener("click", function(){
+    loadScores();
+    if (timer===75) {
+        removeStartPage();
+    } else {
+        clearQuestion();
+        answerResponse.remove();
+    }
+    highscore();
+});
+
+// display the quiz finish page
 var finishQuiz = function() {
+    // clear countdown interval and get remaining time left as user score
+    debugger;
+    finishQuiz = true;
+    score = stopCountdown();
+
     var quizFinishDiv = document.createElement("div");
     var quizFinishText = document.createElement("p");
     var quizFinishInput = document.createElement("input");
@@ -158,7 +202,7 @@ var finishQuiz = function() {
     quizFinishLabel.setAttribute("class", "m-right");
 
     quizFinishText.setAttribute("class", "text-left");
-    quizFinishText.innerText = "Your final score is " + numPoints;
+    quizFinishText.innerText = "Your final score is " + score;
     quizFinishLabel.innerText = "Enter Initials: ";
 
 
@@ -181,14 +225,18 @@ var finishQuiz = function() {
 
         var userObj = { 
             initials: userInitals,
-            score: numPoints
+            score: score
         };
 
         loadScores();
         users.push(userObj);
         localStorage.setItem("score",JSON.stringify(users));
 
-        highscore(quizFinishDiv, quizFinishText, userObj);
+        // remove unneeded elements
+        quizFinishText.remove();
+        answerResponse.remove();
+        quizFinishDiv.remove();
+        highscore();
     }); 
 }
 
@@ -257,7 +305,6 @@ var loadScores = function() {
     if (savedScores === null) {
         return true;
     } else {
-        // JSON.parse(prevScoreArr);
         for (var i=0; i<savedScores.length; i++) {
             users.push(savedScores[i]);
         }
@@ -270,7 +317,8 @@ var displayNextQuestion = function () {
 
 var startQuiz = function() {
     // Start Countdown
-    setInterval(countdown, 1000);
+    var quizDone = false;
+    countdown();
 
     currentQuestion = 0;
     
@@ -278,5 +326,6 @@ var startQuiz = function() {
     displayQuestion(quizQuestions[currentQuestion]);
 };
 
-startQuizButton.addEventListener("click", startQuiz);
 
+// Event listener for start quiz button at main page
+startQuizButton.addEventListener("click", startQuiz);
