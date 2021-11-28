@@ -173,7 +173,6 @@ viewHighscore.addEventListener("click", function(){
 // display the quiz finish page
 var finishQuiz = function() {
     // clear countdown interval and get remaining time left as user score
-    debugger;
     finishQuiz = true;
     score = stopCountdown();
 
@@ -317,12 +316,12 @@ var displayNextQuestion = function () {
 
 var startQuiz = function() {
     // Start Countdown
-    var quizDone = false;
     countdown();
 
     currentQuestion = 0;
     
     removeStartPage();
+
     displayQuestion(quizQuestions[currentQuestion]);
 };
 
