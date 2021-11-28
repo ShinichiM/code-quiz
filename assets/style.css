@@ -49,6 +49,10 @@ header h4 {
     justify-content: center;
 }
 
+.quiz-container button:hover {
+    background-color: rgb(231, 44, 231);
+}
+
 .response {
     border-top: 1px solid rgb(163, 163, 163);
     width: 100%;
@@ -98,6 +102,10 @@ header h4 {
     font-size: 15px;
     background-color: rgb(59, 10, 150);
     justify-content: center;
+}
+
+.submit-button:hover {
+    background-color: rgb(231, 44, 231);
 }
 
 .high-score {
