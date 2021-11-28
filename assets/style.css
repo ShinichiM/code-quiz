@@ -99,3 +99,10 @@ header h4 {
     background-color: rgb(59, 10, 150);
     justify-content: center;
 }
+
+.high-score {
+    text-align: left;
+    font-size: 20px;
+    padding: 5px 5px;
+    background-color: rgb(225, 202, 247);
+}

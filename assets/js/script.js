@@ -12,7 +12,7 @@ var buttonContainer = document.createElement("div");
 buttonContainer.setAttribute("class", "container");
 questionContainer.appendChild(buttonContainer);
 
-var users = []
+var users = [];
 var timer = 60;
 
 var quizQuestions = [
@@ -53,7 +53,7 @@ var countdown = function() {
         divEl.innerText = "Time: " + timer; 
         timer--;
     } else {
-        return false;
+        clearInterval(timer);
     }
 };
 
@@ -79,9 +79,53 @@ var clearQuestion = function() {
 };
 
 // display Highscores
-var highscore = function(quizFinishDiv, finishText, userInitials) {
+var highscore = function(quizFinishDiv, finishText, userObj) {
     // localStorage.setItem(userInitials, numPoints);
     questionEl.innerText = "High Scores";
+    // debugger;
+    // sort users by highest score 
+    users.sort((a,b) => a.score < b.score ? 1 : -1);
+    
+    for (var i=0; i<users.length; i++) {
+        // Only print top five users
+        if (i === 5) {
+            break;
+        }
+        var test = document.createElement("p");
+        test.setAttribute("id","highscores");
+        test.setAttribute("class", "high-score");
+        test.innerText = (i+1) + ". " + users[i].initials + " - " + users[i].score;
+        questionContainer.appendChild(test);
+    }
+    
+    var divEl = document.createElement("div");
+    divEl.setAttribute("class", "left-flex");
+    var button1El = document.createElement("button");
+    var button2El = document.createElement("button");
+
+    button1El.setAttribute("class", "submit-button");
+    button1El.innerText = "Go Back";
+    button2El.setAttribute("class", "submit-button");
+    button2El.innerText = "Clear Highscores";
+    
+    divEl.appendChild(button1El);
+    divEl.appendChild(button2El);
+
+    questionContainer.appendChild(divEl);
+
+    // return back to quiz front page
+    button1El.addEventListener("click", function(){
+        location.reload();
+        return false;
+    });
+
+    button2El.addEventListener("click", function(){
+        var highscoreArr = questionContainer.querySelectorAll("#highscores");
+        for (var i=0; i<highscoreArr.length; i++) {
+            highscoreArr[i].remove();
+        }
+    });
+
     finishText.remove();
     answerResponse.remove();
     quizFinishDiv.remove();
@@ -114,7 +158,7 @@ var finishQuiz = function() {
     quizFinishLabel.setAttribute("class", "m-right");
 
     quizFinishText.setAttribute("class", "text-left");
-    quizFinishText.innerText = "Your final score is 22";
+    quizFinishText.innerText = "Your final score is " + numPoints;
     quizFinishLabel.innerText = "Enter Initials: ";
 
 
@@ -128,24 +172,23 @@ var finishQuiz = function() {
     questionContainer.appendChild(highscoreForm);
     clearQuestion();
 
-    // STORE SCORE IN LOCAL STORAGE
-    var test = document.querySelector("input[id='high-score'").value;
     
     var highscoreForm = document.getElementById("highscore");
 
     highscoreForm.addEventListener("click", function(event){
         event.preventDefault();
-        userInitals = quizFinishInput.value;
+        var userInitals = quizFinishInput.value;
 
-        var userObj = {
+        var userObj = { 
             initials: userInitals,
-            score: timer
+            score: numPoints
         };
-        users.push(userObj);
 
-        // localStorage.setItem("Points")
-        console.log(userInitals + " is it working?");
-        highscore(quizFinishDiv, quizFinishText, quizFinishInput.value);
+        loadScores();
+        users.push(userObj);
+        localStorage.setItem("score",JSON.stringify(users));
+
+        highscore(quizFinishDiv, quizFinishText, userObj);
     }); 
 }
 
@@ -192,6 +235,7 @@ var displayQuestion = function(questionObj) {
     questionEl.setAttribute("class", "container");
     questionEl.innerText = questionObj.question;
 
+    
     // Loop through each answer in the question and create a button whose text value is the answer
     for (var i=0; i<questionObj.answers.length; i++) {
         // create a button for each answer in a question.
@@ -203,6 +247,20 @@ var displayQuestion = function(questionObj) {
         buttonContainer.appendChild(button); 
 
         button.addEventListener("click", selectAnswer);
+    }
+};
+
+var loadScores = function() {
+    var savedScores = localStorage.getItem("score");
+    savedScores = JSON.parse(savedScores);
+
+    if (savedScores === null) {
+        return true;
+    } else {
+        // JSON.parse(prevScoreArr);
+        for (var i=0; i<savedScores.length; i++) {
+            users.push(savedScores[i]);
+        }
     }
 };
 
