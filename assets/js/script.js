@@ -56,7 +56,7 @@ var quizQuestions = [
 var countdown = function() {
     var divEl = document.getElementById("timer");
     time = setInterval(function(){
-        if (timer >= 0){
+        if (timer > 0){
             divEl.innerText = "Time: " + timer; 
             timer--;
         } else {
