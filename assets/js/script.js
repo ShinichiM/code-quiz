@@ -28,12 +28,12 @@ var quizQuestions = [
         {text: "Arrays", correct: false},
         {text: "Alerts", correct: true}
     ]},
-    {question: "How many apples does the grocery store have",
+    {question: "The condition in an if/else statement is enclosed with ____",
     answers: [
-        {text: "20", correct: false},
-        {text: "7", correct: false},
-        {text: "No", correct: false},
-        {text: "Why Apples", correct: true}
+        {text: "quotes", correct: false},
+        {text: "curley brackets", correct: true},
+        {text: "parenthesis", correct: false},
+        {text: "square brackets", correct: false}
     ]},
     {question: "What is a common looping method in Javascript?",
     answers: [
@@ -42,12 +42,12 @@ var quizQuestions = [
         {text: "looper", correct: false},
         {text: "within", correct: false}
     ]},
-    {question: "What is a common looping method in Javascript?",
+    {question: "Arrays in JavaScript are used to store ____",
     answers: [
-        {text: "safdkjelwahfdjs;alkdsajkfl;eawfdsjkr", correct: true},
-        {text: "insert", correct: false},
-        {text: "looper", correct: false},
-        {text: "within", correct: false}
+        {text: "Arrays", correct: false},
+        {text: "Objects", correct: false},
+        {text: "Strings", correct: false},
+        {text: "All of the above", correct: true}
     ]}
 ];
 
