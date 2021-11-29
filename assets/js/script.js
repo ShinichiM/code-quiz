@@ -56,11 +56,12 @@ var quizQuestions = [
 var countdown = function() {
     var divEl = document.getElementById("timer");
     time = setInterval(function(){
-        if (timer > 0){
+        if (timer >= 0){
             divEl.innerText = "Time: " + timer; 
             timer--;
         } else {
             clearInterval(time);
+            time = 0;
         }
     }, 1000);          
 };
@@ -69,8 +70,14 @@ var countdown = function() {
 var stopCountdown = function() {
     clearInterval(time);
     var divEl = document.getElementById("timer");
-    divEl.innerText = "Time: " + timer;
-    return timer;
+    var score = timer;
+    if (score < 0) {
+        score = 0;
+    } else {
+        score = timer;
+    }
+    divEl.innerText = "Time: " + score;
+    return score;
 }
 // Removes the elements on the start page
 var removeStartPage = function() {
